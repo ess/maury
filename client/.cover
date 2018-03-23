@@ -1,0 +1,19 @@
+mode: set
+github.com/ess/maury/client/driver.go:27.57,29.17 2 1
+github.com/ess/maury/client/driver.go:33.3,39.16 2 1
+github.com/ess/maury/client/driver.go:29.17,31.4 1 0
+github.com/ess/maury/client/driver.go:45.74,47.2 1 1
+github.com/ess/maury/client/driver.go:52.88,54.2 1 1
+github.com/ess/maury/client/driver.go:59.87,61.2 1 1
+github.com/ess/maury/client/driver.go:66.89,68.2 1 1
+github.com/ess/maury/client/driver.go:73.77,75.2 1 1
+github.com/ess/maury/client/driver.go:77.108,85.17 2 1
+github.com/ess/maury/client/driver.go:89.3,95.17 6 1
+github.com/ess/maury/client/driver.go:99.3,100.17 2 1
+github.com/ess/maury/client/driver.go:104.3,106.32 2 1
+github.com/ess/maury/client/driver.go:116.3,116.31 1 1
+github.com/ess/maury/client/driver.go:85.17,87.4 1 0
+github.com/ess/maury/client/driver.go:95.17,97.4 1 0
+github.com/ess/maury/client/driver.go:100.17,102.4 1 0
+github.com/ess/maury/client/driver.go:106.32,114.4 1 1
+github.com/ess/maury/client/driver.go:119.82,131.2 3 1
