@@ -1,15 +1,10 @@
-// Package maury is a repository-inspired client for the Engine Yard API
-package maury
+// Package users provides the data structures and functions for modeling
+// the Users endpoint on the Engine Yard API
+package users
 
-import (
-  "github.com/ess/maury/client"
-)
-
-// NewClient returns a low-level HTTP driver configurd for the Engine Yard API
-// for the given base URL and token. If there are problems initializing the
-// client, then an error is returned.
-func NewClient(baseURL string, token string) (*client.Driver, error) {
-  return client.New(baseURL, token)
+// Entity is a flat data structure that maps to an upstream User
+type Entity struct {
+	ID string `json:"id,omitempty"`
 }
 
 // Copyright 2018 Dennis Walters
