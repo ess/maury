@@ -7,7 +7,6 @@ import (
   "strings"
   "testing"
 
-  "github.com/ess/maury/result"
   "github.com/ess/maury/users"
 )
 
@@ -15,7 +14,7 @@ type reader struct {
   responses map[string]string
 }
 
-func (r *reader) Get(path string, params url.Values) *result.Result {
+func (r *reader) Get(path string, params url.Values) ([]byte, error) {
   key := r.key(path, params)
 
   if r.responses == nil {
@@ -24,10 +23,10 @@ func (r *reader) Get(path string, params url.Values) *result.Result {
 
   response, ok := r.responses[key]
   if ok {
-    return result.New([]byte(response), nil)
+    return []byte(response), nil
   }
 
-  return result.New(nil, errors.New("Getter didn't get"))
+  return nil, errors.New("Getter didn't get")
 }
 
 func (r *reader) set(path string, params url.Values, response string) {

@@ -5,15 +5,13 @@ import (
   "fmt"
   "net/url"
   "testing"
-
-  "github.com/ess/maury/result"
 )
 
 type updater struct {
   responses map[string]string
 }
 
-func (r *updater) Put(path string, params url.Values, data []byte) *result.Result {
+func (r *updater) Put(path string, params url.Values, data []byte) ([]byte, error) {
   key := r.key(path)
 
   if r.responses == nil {
@@ -22,10 +20,10 @@ func (r *updater) Put(path string, params url.Values, data []byte) *result.Resul
 
   response, ok := r.responses[key]
   if ok {
-    return result.New([]byte(response), nil)
+    return []byte(response), nil
   }
 
-  return result.New(nil, errors.New("Getter didn't get"))
+  return nil, errors.New("Getter didn't get")
 }
 
 func (r *updater) set(path string, response string) {

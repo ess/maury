@@ -23,12 +23,12 @@ func TestDriver_Get(t *testing.T) {
         httpmock.NewStringResponder(200, string(data)),
       )
 
-      result := driver.Get("sausages", nil)
+      result, err := driver.Get("sausages", nil)
 
       t.Run(
         "it is a success",
         func(t *testing.T) {
-          if !result.Ok() {
+          if err != nil {
             t.Errorf("Call was not successful!")
           }
         })
@@ -36,9 +36,8 @@ func TestDriver_Get(t *testing.T) {
       t.Run(
         "it has the expected value",
         func(t *testing.T) {
-          blob, _ := result.Value().([]byte)
-          if string(blob) != string(data) {
-            t.Errorf("Expected '%s', got '%s'", string(data), string(blob))
+          if string(result) != string(data) {
+            t.Errorf("Expected '%s', got '%s'", string(data), string(result))
           }
         })
 
@@ -59,12 +58,12 @@ func TestDriver_Get(t *testing.T) {
 
       params := url.Values{}
       params.Set("color", "gold")
-      result := driver.Get("sausages", params)
+      result, err := driver.Get("sausages", params)
 
       t.Run(
         "it is a success",
         func(t *testing.T) {
-          if !result.Ok() {
+          if err != nil {
             t.Errorf("Call was not successful!")
           }
         })
@@ -72,9 +71,8 @@ func TestDriver_Get(t *testing.T) {
       t.Run(
         "it has the expected value",
         func(t *testing.T) {
-          blob, _ := result.Value().([]byte)
-          if string(blob) != string(data) {
-            t.Errorf("Expected '%s', got '%s'", string(data), string(blob))
+          if string(result) != string(data) {
+            t.Errorf("Expected '%s', got '%s'", string(data), string(result))
           }
         })
     })
@@ -91,20 +89,18 @@ func TestDriver_Get(t *testing.T) {
         httpmock.NewStringResponder(500, "Drop your weapon. You have 20 seconds to comply."),
       )
 
-      result := driver.Get("ed209", nil)
+      result, err := driver.Get("ed209", nil)
 
-      t.Run(
-        "it is a failure",
-        func(t *testing.T) {
-          if result.Ok() {
-            t.Errorf("Expected call to be unsuccessful!")
-          }
-        })
+      t.Run("it has no result", func(t *testing.T) {
+        if result != nil {
+          t.Errorf("Expected a nil result")
+        }
+      })
 
       t.Run(
         "it has an error",
         func(t *testing.T) {
-          if result.Error() == nil {
+          if err == nil {
             t.Errorf("Expected a non-nil error")
           }
         })
@@ -123,20 +119,18 @@ func TestDriver_Get(t *testing.T) {
         httpmock.NewStringResponder(404, "You are now staring into the void. It is staring back."),
       )
 
-      result := driver.Get("404", nil)
+      result, err := driver.Get("404", nil)
 
-      t.Run(
-        "it is a failure",
-        func(t *testing.T) {
-          if result.Ok() {
-            t.Errorf("Expected call to be unsuccessful!")
-          }
-        })
+      t.Run("it has no result", func(t *testing.T) {
+        if result != nil {
+          t.Errorf("Expected a nil result")
+        }
+      })
 
       t.Run(
         "it has an error",
         func(t *testing.T) {
-          if result.Error() == nil {
+          if err == nil {
             t.Errorf("Expected a non-nil error")
           }
         })
@@ -161,12 +155,12 @@ func TestDriver_Post(t *testing.T) {
         httpmock.NewStringResponder(200, string(data)),
       )
 
-      result := driver.Post("sausages", nil, data)
+      result, err := driver.Post("sausages", nil, data)
 
       t.Run(
         "it is a success",
         func(t *testing.T) {
-          if !result.Ok() {
+          if err != nil {
             t.Errorf("Call was not successful!")
           }
         })
@@ -174,9 +168,8 @@ func TestDriver_Post(t *testing.T) {
       t.Run(
         "it has the expected value",
         func(t *testing.T) {
-          blob, _ := result.Value().([]byte)
-          if string(blob) != string(data) {
-            t.Errorf("Expected '%s', got '%s'", string(data), string(blob))
+          if string(result) != string(data) {
+            t.Errorf("Expected '%s', got '%s'", string(data), string(result))
           }
         })
 
@@ -196,12 +189,12 @@ func TestDriver_Post(t *testing.T) {
 
       params := url.Values{}
       params.Set("color", "gold")
-      result := driver.Post("sausages", params, data)
+      result, err := driver.Post("sausages", params, data)
 
       t.Run(
         "it is a success",
         func(t *testing.T) {
-          if !result.Ok() {
+          if err != nil {
             t.Errorf("Call was not successful!")
           }
         })
@@ -209,9 +202,8 @@ func TestDriver_Post(t *testing.T) {
       t.Run(
         "it has the expected value",
         func(t *testing.T) {
-          blob, _ := result.Value().([]byte)
-          if string(blob) != string(data) {
-            t.Errorf("Expected '%s', got '%s'", string(data), string(blob))
+          if string(result) != string(data) {
+            t.Errorf("Expected '%s', got '%s'", string(data), string(result))
           }
         })
     })
@@ -228,20 +220,19 @@ func TestDriver_Post(t *testing.T) {
         httpmock.NewStringResponder(500, "Drop your weapon. You have 20 seconds to comply."),
       )
 
-      result := driver.Post("ed209", nil, data)
+      result, err := driver.Post("ed209", nil, data)
 
-      t.Run(
-        "it is a failure",
-        func(t *testing.T) {
-          if result.Ok() {
-            t.Errorf("Expected call to be unsuccessful!")
-          }
-        })
+      t.Run("it has no result", func(t *testing.T) {
+        if result != nil {
+          t.Errorf("Expected a nil result")
+        }
+      })
+
 
       t.Run(
         "it has an error",
         func(t *testing.T) {
-          if result.Error() == nil {
+          if err == nil {
             t.Errorf("Expected a non-nil error")
           }
         })
@@ -260,20 +251,19 @@ func TestDriver_Post(t *testing.T) {
         httpmock.NewStringResponder(404, "You are now staring into the void. It is staring back."),
       )
 
-      result := driver.Post("404", nil, data)
+      result, err := driver.Post("404", nil, data)
 
-      t.Run(
-        "it is a failure",
-        func(t *testing.T) {
-          if result.Ok() {
-            t.Errorf("Expected call to be unsuccessful!")
-          }
-        })
+      t.Run("it has no result", func(t *testing.T) {
+        if result != nil {
+          t.Errorf("Expected a nil result")
+        }
+      })
+
 
       t.Run(
         "it has an error",
         func(t *testing.T) {
-          if result.Error() == nil {
+          if err == nil {
             t.Errorf("Expected a non-nil error")
           }
         })
@@ -298,12 +288,12 @@ func TestDriver_Put(t *testing.T) {
         httpmock.NewStringResponder(200, string(data)),
       )
 
-      result := driver.Put("sausages", nil, data)
+      result, err := driver.Put("sausages", nil, data)
 
       t.Run(
         "it is a success",
         func(t *testing.T) {
-          if !result.Ok() {
+          if err != nil {
             t.Errorf("Call was not successful!")
           }
         })
@@ -311,9 +301,8 @@ func TestDriver_Put(t *testing.T) {
       t.Run(
         "it has the expected value",
         func(t *testing.T) {
-          blob, _ := result.Value().([]byte)
-          if string(blob) != string(data) {
-            t.Errorf("Expected '%s', got '%s'", string(data), string(blob))
+          if string(result) != string(data) {
+            t.Errorf("Expected '%s', got '%s'", string(data), string(result))
           }
         })
 
@@ -333,12 +322,12 @@ func TestDriver_Put(t *testing.T) {
 
       params := url.Values{}
       params.Set("color", "gold")
-      result := driver.Put("sausages", params, data)
+      result, err := driver.Put("sausages", params, data)
 
       t.Run(
         "it is a success",
         func(t *testing.T) {
-          if !result.Ok() {
+          if err != nil {
             t.Errorf("Call was not successful!")
           }
         })
@@ -346,9 +335,8 @@ func TestDriver_Put(t *testing.T) {
       t.Run(
         "it has the expected value",
         func(t *testing.T) {
-          blob, _ := result.Value().([]byte)
-          if string(blob) != string(data) {
-            t.Errorf("Expected '%s', got '%s'", string(data), string(blob))
+          if string(result) != string(data) {
+            t.Errorf("Expected '%s', got '%s'", string(data), string(result))
           }
         })
     })
@@ -365,20 +353,19 @@ func TestDriver_Put(t *testing.T) {
         httpmock.NewStringResponder(500, "Drop your weapon. You have 20 seconds to comply."),
       )
 
-      result := driver.Put("ed209", nil, data)
+      result, err := driver.Put("ed209", nil, data)
 
-      t.Run(
-        "it is a failure",
-        func(t *testing.T) {
-          if result.Ok() {
-            t.Errorf("Expected call to be unsuccessful!")
-          }
-        })
+      t.Run("it has no result", func(t *testing.T) {
+        if result != nil {
+          t.Errorf("Expected a nil result")
+        }
+      })
+
 
       t.Run(
         "it has an error",
         func(t *testing.T) {
-          if result.Error() == nil {
+          if err == nil {
             t.Errorf("Expected a non-nil error")
           }
         })
@@ -397,20 +384,19 @@ func TestDriver_Put(t *testing.T) {
         httpmock.NewStringResponder(404, "You are now staring into the void. It is staring back."),
       )
 
-      result := driver.Put("404", nil, data)
+      result, err := driver.Put("404", nil, data)
 
-      t.Run(
-        "it is a failure",
-        func(t *testing.T) {
-          if result.Ok() {
-            t.Errorf("Expected call to be unsuccessful!")
-          }
-        })
+      t.Run("it has no result", func(t *testing.T) {
+        if result != nil {
+          t.Errorf("Expected a nil result")
+        }
+      })
+
 
       t.Run(
         "it has an error",
         func(t *testing.T) {
-          if result.Error() == nil {
+          if err == nil {
             t.Errorf("Expected a non-nil error")
           }
         })
@@ -435,12 +421,12 @@ func TestDriver_Patch(t *testing.T) {
         httpmock.NewStringResponder(200, string(data)),
       )
 
-      result := driver.Patch("sausages", nil, data)
+      result, err := driver.Patch("sausages", nil, data)
 
       t.Run(
         "it is a success",
         func(t *testing.T) {
-          if !result.Ok() {
+          if err != nil {
             t.Errorf("Call was not successful!")
           }
         })
@@ -448,9 +434,8 @@ func TestDriver_Patch(t *testing.T) {
       t.Run(
         "it has the expected value",
         func(t *testing.T) {
-          blob, _ := result.Value().([]byte)
-          if string(blob) != string(data) {
-            t.Errorf("Expected '%s', got '%s'", string(data), string(blob))
+          if string(result) != string(data) {
+            t.Errorf("Expected '%s', got '%s'", string(data), string(result))
           }
         })
 
@@ -470,12 +455,12 @@ func TestDriver_Patch(t *testing.T) {
 
       params := url.Values{}
       params.Set("color", "gold")
-      result := driver.Patch("sausages", params, data)
+      result, err := driver.Patch("sausages", params, data)
 
       t.Run(
         "it is a success",
         func(t *testing.T) {
-          if !result.Ok() {
+          if err != nil {
             t.Errorf("Call was not successful!")
           }
         })
@@ -483,9 +468,8 @@ func TestDriver_Patch(t *testing.T) {
       t.Run(
         "it has the expected value",
         func(t *testing.T) {
-          blob, _ := result.Value().([]byte)
-          if string(blob) != string(data) {
-            t.Errorf("Expected '%s', got '%s'", string(data), string(blob))
+          if string(result) != string(data) {
+            t.Errorf("Expected '%s', got '%s'", string(data), string(result))
           }
         })
     })
@@ -502,23 +486,20 @@ func TestDriver_Patch(t *testing.T) {
         httpmock.NewStringResponder(500, "Drop your weapon. You have 20 seconds to comply."),
       )
 
-      result := driver.Patch("ed209", nil, data)
+      result, err := driver.Patch("ed209", nil, data)
 
-      t.Run(
-        "it is a failure",
-        func(t *testing.T) {
-          if result.Ok() {
-            t.Errorf("Expected call to be unsuccessful!")
-          }
-        })
+      t.Run("it has no result", func(t *testing.T) {
+        if result != nil {
+          t.Errorf("Expected a nil result")
+        }
+      })
 
-      t.Run(
-        "it has an error",
-        func(t *testing.T) {
-          if result.Error() == nil {
-            t.Errorf("Expected a non-nil error")
-          }
-        })
+
+      t.Run("it has an error", func(t *testing.T) {
+        if err == nil {
+          t.Errorf("Expected a non-nil error")
+        }
+      })
 
     })
 
@@ -534,23 +515,20 @@ func TestDriver_Patch(t *testing.T) {
         httpmock.NewStringResponder(404, "You are now staring into the void. It is staring back."),
       )
 
-      result := driver.Patch("404", nil, data)
+      result, err := driver.Patch("404", nil, data)
 
-      t.Run(
-        "it is a failure",
-        func(t *testing.T) {
-          if result.Ok() {
-            t.Errorf("Expected call to be unsuccessful!")
-          }
-        })
+      t.Run("it has no result", func(t *testing.T) {
+        if result != nil {
+          t.Errorf("Expected a nil result")
+        }
+      })
 
-      t.Run(
-        "it has an error",
-        func(t *testing.T) {
-          if result.Error() == nil {
-            t.Errorf("Expected a non-nil error")
-          }
-        })
+
+      t.Run("it has an error", func(t *testing.T) {
+        if err == nil {
+          t.Errorf("Expected a non-nil error")
+        }
+      })
 
     })
 }
@@ -571,12 +549,12 @@ func TestDriver_Delete(t *testing.T) {
         httpmock.NewStringResponder(200, string(data)),
       )
 
-      result := driver.Delete("sausages", nil)
+      result, err := driver.Delete("sausages", nil)
 
       t.Run(
         "it is a success",
         func(t *testing.T) {
-          if !result.Ok() {
+          if err != nil {
             t.Errorf("Call was not successful!")
           }
         })
@@ -584,9 +562,8 @@ func TestDriver_Delete(t *testing.T) {
       t.Run(
         "it has the expected value",
         func(t *testing.T) {
-          blob, _ := result.Value().([]byte)
-          if string(blob) != string(data) {
-            t.Errorf("Expected '%s', got '%s'", string(data), string(blob))
+          if string(result) != string(data) {
+            t.Errorf("Expected '%s', got '%s'", string(data), string(result))
           }
         })
 
@@ -608,12 +585,12 @@ func TestDriver_Delete(t *testing.T) {
 
       params := url.Values{}
       params.Set("color", "gold")
-      result := driver.Delete("sausages", params)
+      result, err := driver.Delete("sausages", params)
 
       t.Run(
         "it is a success",
         func(t *testing.T) {
-          if !result.Ok() {
+          if err != nil {
             t.Errorf("Call was not successful!")
           }
         })
@@ -621,9 +598,8 @@ func TestDriver_Delete(t *testing.T) {
       t.Run(
         "it has the expected value",
         func(t *testing.T) {
-          blob, _ := result.Value().([]byte)
-          if string(blob) != string(data) {
-            t.Errorf("Expected '%s', got '%s'", string(data), string(blob))
+          if string(result) != string(data) {
+            t.Errorf("Expected '%s', got '%s'", string(data), string(result))
           }
         })
     })
@@ -640,20 +616,19 @@ func TestDriver_Delete(t *testing.T) {
         httpmock.NewStringResponder(500, "Drop your weapon. You have 20 seconds to comply."),
       )
 
-      result := driver.Delete("ed209", nil)
+      result, err := driver.Delete("ed209", nil)
 
-      t.Run(
-        "it is a failure",
-        func(t *testing.T) {
-          if result.Ok() {
-            t.Errorf("Expected call to be unsuccessful!")
-          }
-        })
+      t.Run("it has no result", func(t *testing.T) {
+        if result != nil {
+          t.Errorf("Expected a nil result")
+        }
+      })
+
 
       t.Run(
         "it has an error",
         func(t *testing.T) {
-          if result.Error() == nil {
+          if err == nil {
             t.Errorf("Expected a non-nil error")
           }
         })
@@ -672,20 +647,19 @@ func TestDriver_Delete(t *testing.T) {
         httpmock.NewStringResponder(404, "You are now staring into the void. It is staring back."),
       )
 
-      result := driver.Delete("404", nil)
+      result, err := driver.Delete("404", nil)
 
-      t.Run(
-        "it is a failure",
-        func(t *testing.T) {
-          if result.Ok() {
-            t.Errorf("Expected call to be unsuccessful!")
-          }
-        })
+      t.Run("it has no result", func(t *testing.T) {
+        if result != nil {
+          t.Errorf("Expected a nil result")
+        }
+      })
+
 
       t.Run(
         "it has an error",
         func(t *testing.T) {
-          if result.Error() == nil {
+          if err == nil {
             t.Errorf("Expected a non-nil error")
           }
         })

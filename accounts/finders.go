@@ -2,17 +2,15 @@ package accounts
 
 import (
   "encoding/json"
-  "errors"
   "net/url"
   "strconv"
   "strings"
 
-  "github.com/ess/maury/result"
   "github.com/ess/maury/users"
 )
 
 type Reader interface{
-  Get(path string, params url.Values) *result.Result
+  Get(string, url.Values) ([]byte, error)
 }
 
 func All(driver Reader, params url.Values) []*Entity {
@@ -26,20 +24,19 @@ func ForUser(driver Reader, user *users.Entity, params url.Values) []*Entity {
 }
 
 func Find(driver Reader, id string) (*Entity, error) {
-  response := driver.Get("accounts/" + id, nil)
-
-  wrapper := struct{Account *Entity `json:"account,omitempty"`}{}
-  if response.Ok() {
-    data := response.Value().([]byte)
-    err := json.Unmarshal(data, &wrapper)
-    if err != nil {
-      return nil, err
-    }
-
-    return wrapper.Account, nil
+  response, err := driver.Get("accounts/" + id, nil)
+  if err != nil {
+    return nil, err
   }
 
-  return nil, errors.New("Could not find account with ID")
+  wrapper := struct{Account *Entity `json:"account,omitempty"`}{}
+
+  err = json.Unmarshal(response, &wrapper)
+  if err != nil {
+    return nil, err
+  }
+
+  return wrapper.Account, nil
 }
 
 func allPages(driver Reader, path string, params url.Values) []*Entity {
@@ -61,10 +58,8 @@ func allPages(driver Reader, path string, params url.Values) []*Entity {
   for len(wrapper.Accounts) > 0 {
     params.Set("page", strconv.Itoa(page))
 
-    response := driver.Get(path, params)
-    if response.Ok() {
-      data := response.Value().([]byte)
-      if err := json.Unmarshal(data, &wrapper); err == nil {
+    if response, err := driver.Get(path, params); err == nil {
+      if jerr := json.Unmarshal(response, &wrapper); jerr == nil {
         accounts = append(accounts, wrapper.Accounts...)
 
         if len(wrapper.Accounts) < maxResults {

@@ -10,8 +10,6 @@ import (
   "net/url"
   "strings"
   "time"
-
-  "github.com/ess/maury/result"
 )
 
 // Driver is an object that knows specifically how to interact with the
@@ -40,41 +38,36 @@ func New(baseUrl string, token string) (*Driver, error) {
 }
 
 // Get performs a GET operation for the given path and params against the 
-// upstream API. it returns a Result that contains either a byte array
-// or an error.
-func (driver *Driver) Get(path string, params url.Values) *result.Result {
+// upstream API. it returns a byte array and an error.
+func (driver *Driver) Get(path string, params url.Values) ([]byte, error) {
   return driver.makeRequest("GET", path, params, nil)
 }
 
 // Post performs a POST operation for the given path, params, and data against
-// the upstream API. it returns a Result that contains either a byte array
-// or an error.
-func (driver *Driver) Post(path string, params url.Values, data []byte) *result.Result {
+// the upstream API. it returns a byte array and an error.
+func (driver *Driver) Post(path string, params url.Values, data []byte) ([]byte, error) {
   return driver.makeRequest("POST", path, params, data)
 }
 
 // Put performs a PUT operation for the given path, params, and data against
-// the upstream API. it returns a Result that contains either a byte array
-// or an error.
-func (driver *Driver) Put(path string, params url.Values, data []byte) *result.Result {
+// the upstream API. It returns a byte array and an error.
+func (driver *Driver) Put(path string, params url.Values, data []byte) ([]byte, error) {
   return driver.makeRequest("PUT", path, params, data)
 }
 
 // Patch performs a PATCH operation for the given path, params, and data against
-// the upstream API. it returns a Result that contains either a byte array
-// or an error.
-func (driver *Driver) Patch(path string, params url.Values, data []byte) *result.Result {
+// the upstream API. it returns a byte array and an error.
+func (driver *Driver) Patch(path string, params url.Values, data []byte) ([]byte, error) {
   return driver.makeRequest("PATCH", path, params, data)
 }
 
 // Delete performs a DELETE operation for the given path and params against the 
-// upstream API. it returns a Result that contains either a byte array
-// or an error.
-func (driver *Driver) Delete(path string, params url.Values) *result.Result {
+// upstream API. it returns a byte array and an error.
+func (driver *Driver) Delete(path string, params url.Values) ([]byte, error) {
   return driver.makeRequest("DELETE", path, params, nil)
 }
 
-func (driver *Driver) makeRequest(verb string, path string, params url.Values, data []byte) *result.Result {
+func (driver *Driver) makeRequest(verb string, path string, params url.Values, data []byte) ([]byte, error) {
 
   request, err := http.NewRequest(
     verb,
@@ -83,7 +76,7 @@ func (driver *Driver) makeRequest(verb string, path string, params url.Values, d
   )
 
   if err != nil {
-    return result.New(nil, err)
+    return nil, err
   }
 
   request.Header.Add("X-EY-TOKEN", driver.token)
@@ -93,27 +86,24 @@ func (driver *Driver) makeRequest(verb string, path string, params url.Values, d
 
   response, err := driver.raw.Do(request)
   if err != nil {
-    return result.New(nil, err)
+    return nil, err
   }
 
   body, err := ioutil.ReadAll(response.Body)
   if err != nil {
-    return result.New(nil, err)
+    return nil, err
   }
 
   defer response.Body.Close()
 
   if response.StatusCode > 299 {
-    return result.New(
-      nil,
-      fmt.Errorf(
-        "The upstream API returned the following status: %d",
-        response.StatusCode,
-      ),
+    return nil, fmt.Errorf(
+      "The upstream API returned the following status: %d",
+      response.StatusCode,
     )
   }
 
-  return result.New(body, nil)
+  return body, nil
 }
 
 func (driver *Driver) constructRequestURL(path string, params url.Values) string {
