@@ -5,6 +5,19 @@ package users
 // Entity is a flat data structure that maps to an upstream User
 type Entity struct {
 	ID string `json:"id,omitempty"`
+
+  // User Details
+  APIToken string `json:"api_token,omitempty"`
+  Email string `json:"email,omitempty"`
+  Name string `json:"name,omitempty"`
+  Role string `json:"role,omitempty"`
+  Staff bool `json:"staff,omitempty"`
+  Verified bool `json:"verified,omitempty"`
+
+  // Timestamps
+  CreatedAt string `json:"created_at,omitempty"`
+  DeletedAt string `json:"deleted_at,omitempty"`
+  UpdatedAt string `json:"updated_at,omitempty"`
 }
 
 // Copyright 2018 Dennis Walters
